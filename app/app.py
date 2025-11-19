@@ -7,6 +7,11 @@ import glob
 import sys
 import os
 
+WINDOW_WIDTH = 900
+WINDOW_HEIGHT = 500
+WINDOW_TITLE = "File Extension Converter"
+WINDOW_ICON = 'static/icons/icon-transparent.png'
+
 # Receives the responce from HTML and handles it
 class CallHandler(QObject):
 
@@ -25,16 +30,14 @@ class CallHandler(QObject):
     def convertButtonClicked(self, directory, fromExtension, toExtension):
         renameExtensions.find_files_with_extension_non_recursive(directory, fromExtension, toExtension)
 
-
-
 class HTMLWindow(QMainWindow):
     def __init__(self):
         super().__init__()
 
         # Sets the window information
-        self.setWindowTitle("File Extension Converter")
-        self.setWindowIcon(QIcon('static/icons/icon-transparent.png'))
-        self.setFixedSize(900, 500)
+        self.setWindowTitle(WINDOW_TITLE)
+        self.setWindowIcon(QIcon(WINDOW_ICON))
+        self.setFixedSize(WINDOW_WIDTH, WINDOW_HEIGHT)
 
         # Initializes the Webview
         self.browser = QWebEngineView()
@@ -52,17 +55,6 @@ class HTMLWindow(QMainWindow):
         file_path = os.path.join(script_dir, relative_path)
         self.browser.setUrl(QUrl.fromLocalFile(file_path))
 
-
-    '''
-        # Confirmation of the page loading successfully
-        self.browser.page().loadFinished.connect(self.on_load_finished)
-
-    def on_load_finished(self, ok):
-        if ok:
-            print("HTML loaded successfully!")
-    '''
-
-
 class renameExtensions:
     def find_files_with_extension_non_recursive(directory, fromExtension, toExtension):
         search_pattern = os.path.join(directory, f'*{fromExtension}')
@@ -74,12 +66,9 @@ class renameExtensions:
         new_file_path = base_name + toExtension
         os.rename(file_path, new_file_path)
 
-
-
 if __name__ == "__main__":
     os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "0"
     QGuiApplication.setHighDpiScaleFactorRoundingPolicy(Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
-
     app = QApplication(sys.argv)
     window = HTMLWindow()
     window.show()
